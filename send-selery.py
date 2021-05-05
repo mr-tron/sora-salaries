@@ -2,7 +2,30 @@ from substrateinterface import SubstrateInterface, Keypair
 from substrateinterface.exceptions import SubstrateRequestException
 from scalecodec.type_registry import load_type_registry_file
 import csv
+import sys
 
+calls = []
+with open(sys.argv[1], newline='') as transfers_val_csv:
+    transfers_val = csv.reader(transfers_val_csv, delimiter=',')
+    next(transfers_val, None)
+    for row in transfers_val:
+        calls.append({
+            "to": row[1],
+            "amount": row[2],
+            "asset_id": '0x0200040000000000000000000000000000000000000000000000000000000000'
+        })
+
+with open(sys.argv[2], newline='') as transfers_pswap_csv:
+    transfers_pswap = csv.reader(transfers_pswap_csv, delimiter=',')
+    next(transfers_pswap, None)
+    for row in transfers_pswap:
+        calls.append({
+            "to": row[1],
+            "amount": row[2],
+            "asset_id": '0x0200050000000000000000000000000000000000000000000000000000000000'
+        })
+
+print("calls {}".format(calls));
 
 custom_type_registry = load_type_registry_file("custom_types.json")
 substrate = SubstrateInterface(
